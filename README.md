@@ -18,7 +18,7 @@ To install required libraries, run:
 
     For Windows:
 
-    py - pip install -r requirements.txt   
+    py -m pip install -r requirements.txt   
 
 Quickstart Guide
 ----------------

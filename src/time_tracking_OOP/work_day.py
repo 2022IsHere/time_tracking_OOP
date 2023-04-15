@@ -13,20 +13,31 @@ class WorkDay:
         self.total_break_time = datetime.timedelta(0)
         self.latest_break = None
         self.total_work_time = None
-
+        self.work_status = None  
+        self.work_status_icons = {1: 'On Break!', 2: 'Working!', 3: 'Not Started!'}
+        self.work_break_analysis = []
+    
+        
     def __str__(self):
         """Return a string representation of the work day."""
         return f"Work day: {self.day.strftime('%A %d %B %Y')}\nWeek No:  {self.day.strftime('%W')}"
 
 
+    def get_day(self):
+        """Return the day."""
+        return self.day
+    
+
     def start_work_day(self):
         """Start the work day."""
         self.work_start_time = datetime.datetime.now()
+        self.work_status = self.work_status_icons[2]
 
 
     def end_work_day(self):
         """End the work day."""
         self.work_end_time = datetime.datetime.now()
+        self.work_status = self.work_status_icons[3]
 
 
     def give_break(self):
@@ -34,11 +45,13 @@ class WorkDay:
         self.break_count += 1
         self.latest_break = datetime.datetime.now()
         self.work_breaks[self.break_count] = {self.latest_break: None}
+        self.work_status = self.work_status_icons[1]
 
 
     def return_from_break(self):
         """Return from a break during the work day."""
         self.work_breaks[self.break_count][self.latest_break] = datetime.datetime.now()
+        self.work_status = self.work_status_icons[2]
 
     
     def count_break_time(self):
@@ -50,6 +63,7 @@ class WorkDay:
                     total_break_time += self.work_breaks[i][j] - j
         self.total_break_time = total_break_time
         return self.total_break_time
+
 
     def count_work_time(self):
         """Count the time spent on work."""
@@ -65,18 +79,21 @@ class WorkDay:
             print(f"You have been working for {working_till}")
             return working_till
 
+
     def analyze_work_breaks(self):
         """Analyze the work breaks in human readable format."""
         for i in self.work_breaks.keys():
             for j in self.work_breaks[i].keys():
                 if self.work_breaks[i][j] is not None:
-                    return f"\tBreak {i} started at {j.strftime('%H:%M:%S')} and ended at {self.work_breaks[i][j].strftime('%H:%M:%S')}\n"
+                    self.work_break_analysis.append(f"\tBreak {i} started at {j.strftime('%H:%M:%S')} and ended at {self.work_breaks[i][j].strftime('%H:%M:%S')}\n")
                 else:
-                    return f"\tBreak {i} started at {j.strftime('%H:%M:%S')} and is still ongoing.\n"
+                    self.work_break_analysis.append(f"\tBreak {i} started at {j.strftime('%H:%M:%S')} and is still ongoing.\n")
+
 
     def save_work_day(self):
         """Save the work day to a file."""
         pass
+
 
     def report_work_day(self):
         """Report the work day to the user in a txt file."""
@@ -86,6 +103,9 @@ class WorkDay:
             day_report.write(f"Work end: {self.work_end_time.strftime('%H:%M:%S')}\n")
             day_report.write(f"Total work time: {str(self.total_work_time).split('.')[0]}\n")
             day_report.write(f"Total break time: {str(self.total_break_time).split('.')[0]}\n")
-            day_report.write(f"\nBreaks:\n {self.analyze_work_breaks()}\n")
+            self.analyze_work_breaks()
+            day_report.write("\nBreaks:\n")
+            for i in self.work_break_analysis:
+                day_report.write(i)
         
 

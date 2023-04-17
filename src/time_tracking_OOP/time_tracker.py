@@ -22,7 +22,7 @@ class TimeTracker(tk.Tk):
         self.title("Work Time Tracker ver 0.1.0")
 
         # window size and position
-        self.geometry("%dx%d" % (self.winfo_screenwidth() * 1//3, self.winfo_screenheight() * 1//3))
+        self.geometry("%dx%d" % (self.winfo_screenwidth() * 3//5, self.winfo_screenheight() * 3//5))
     
         # bind close window event
         self.protocol("WM_DELETE_WINDOW", self.__close)
@@ -60,8 +60,8 @@ class TimeTracker(tk.Tk):
         day_stats_button = ttk.Button(self, text="Day Stats", command=self.display_day_stats)
         day_stats_button.grid(row=4, column=3, sticky=tk.NSEW)
 
-        self.columnconfigure((0,1,2,3,4,5), weight=1)
-        self.rowconfigure((0,1,2,3,4,5), weight=1)
+        self.columnconfigure((1,2,3,4,5), weight=1)
+        self.rowconfigure((1,2,3,4,5), weight=1)
     
     def show_time(self):
         time_string = strftime('%H:%M:%S') # time format 
@@ -112,7 +112,6 @@ class TimeTracker(tk.Tk):
         home.pack(expand=True)
         home.grab_set()
         
-
 
     def __close(self):
         """Close window event"""

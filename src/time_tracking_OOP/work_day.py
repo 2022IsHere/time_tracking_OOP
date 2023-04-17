@@ -20,7 +20,7 @@ class WorkDay:
         
     def __str__(self):
         """Return a string representation of the work day."""
-        return f"Work day: {self.day.strftime('%A %d %B %Y')}\nWeek No:  {self.day.strftime('%W')}"
+        return f"{self.day.strftime('%A')}\n{self.day.strftime('%d %B %Y')}\nWeek No: {self.day.strftime('%W')}"
 
 
     def get_day(self):

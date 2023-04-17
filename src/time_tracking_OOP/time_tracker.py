@@ -9,7 +9,7 @@ from time import strftime
 
 
 #import time_tracking_calendar 
-import work_day
+from work_day import WorkDay
 import day_stats
 
 class TimeTracker(tk.Tk):
@@ -28,44 +28,40 @@ class TimeTracker(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.__close)
         
         # Show the the day information
-        self.day = work_day.WorkDay()
+        self.day = WorkDay()
         
         # Show the the day information
-        self.work_day_label = ttk.Label(self, text=f"{self.day}")
-        self.work_day_label.grid(row=0, column=0, columnspan=4, sticky=tk.NSEW)
+        self.work_day_label = ttk.Label(self, text=f"{self.day}", font=40)
+        self.work_day_label.grid(row=0, column=0, sticky=tk.NSEW)
 
         # Show actual time
-        self.time_label = ttk.Label(self, text="Time")
-        self.time_label.grid(row=0, column=4, sticky=tk.NE)
+        self.time_label = ttk.Label(self, text="Time", font=40)
+        self.time_label.grid(row=0, column=6, sticky=tk.NSEW)
 
         # Display Informaton about the current work day
-        day_info_frame = ttk.Frame(self)
-        self.work_status_label = ttk.Label(day_info_frame, text=f"{self.day.work_status}")
-        self.work_status_label.pack(side=tk.TOP)
-        day_info_frame.grid(row=2, column=0, rowspan=3 ,columnspan=4, sticky=tk.NSEW)
-
+        self.display_work_status()
         
         # Create buttons
         work_start_button = ttk.Button(self, text="Day Start", command=lambda: self.__start_work_day())
-        work_start_button.grid(row=5, column=0, padx=2, pady=2, sticky=tk.NSEW)
+        work_start_button.grid(row=3, column=1, sticky=tk.NSEW)
 
         work_end_button = ttk.Button(self, text="Day End", command=lambda: self.__end_work_day())
-        work_end_button.grid(row=5, column=3, padx=2, pady=2, sticky=tk.NSEW)
+        work_end_button.grid(row=3, column=4, sticky=tk.NSEW)
 
         break_button = ttk.Button(self, text="Give Break", command=lambda: self.__give_break())
-        break_button.grid(row=5, column=1, padx=2, pady=2, sticky=tk.NSEW)
+        break_button.grid(row=3, column=2, sticky=tk.NSEW)
 
         return_button = ttk.Button(self, text="End Break", command=lambda: self.__end_break())
-        return_button.grid(row=5, column=2, padx=2, pady=2, sticky=tk.NSEW)
+        return_button.grid(row=3, column=3, sticky=tk.NSEW)
 
         report_button = ttk.Button(self, text="Report Day", command=self.day.report_work_day)
-        report_button.grid(row=6, column=0, columnspan=2, padx=2, pady=2, sticky=tk.NSEW)
+        report_button.grid(row=4, column=2, sticky=tk.NSEW)
 
         day_stats_button = ttk.Button(self, text="Day Stats", command=self.display_day_stats)
-        day_stats_button.grid(row=6, column=2, columnspan=2, padx=2, pady=2, sticky=tk.NSEW)
+        day_stats_button.grid(row=4, column=3, sticky=tk.NSEW)
 
-        self.columnconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
+        self.columnconfigure((0,1,2,3,4,5), weight=1)
+        self.rowconfigure((0,1,2,3,4,5), weight=1)
     
     def show_time(self):
         time_string = strftime('%H:%M:%S') # time format 
@@ -100,10 +96,10 @@ class TimeTracker(tk.Tk):
     # Display work status e.g: Working! or On Break!
     def display_work_status(self):
         """Display the current work status."""
-        self.update()
-        self.work_status_label.configure(text=f"{self.day.work_status}")
-        self.work_status_label.grid()
-        self.update()
+        day_info_frame = ttk.Frame(self)
+        self.work_status_label = ttk.Label(day_info_frame, text=f"{self.day.work_status}",font=100)
+        self.work_status_label.pack(side=tk.TOP)
+        day_info_frame.grid(row=2, column=2,columnspan=2, sticky=tk.NSEW)
 
     
     def display_day_stats(self):

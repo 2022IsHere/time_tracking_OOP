@@ -13,8 +13,8 @@ class WorkDay:
         self.total_break_time = datetime.timedelta(0)
         self.latest_break = None
         self.total_work_time = None
-        self.work_status = None  
-        self.work_status_icons = {1: 'On Break!', 2: 'Working!', 3: 'Not Started!'}
+        self.work_status = 'Not Started!'  
+        self.work_status_icons = {1: 'On Break!', 2: 'Working!', 3: 'Not Started!', 4: 'Day Ended!'}
         self.work_break_analysis = []
     
         
@@ -37,7 +37,7 @@ class WorkDay:
     def end_work_day(self):
         """End the work day."""
         self.work_end_time = datetime.datetime.now()
-        self.work_status = self.work_status_icons[3]
+        self.work_status = self.work_status_icons[4]
 
 
     def give_break(self):
@@ -97,6 +97,8 @@ class WorkDay:
 
     def report_work_day(self):
         """Report the work day to the user in a txt file."""
+        self.count_work_time()
+        self.count_break_time()
         with open(f"{self.day.strftime('%d.%m.%Y')}_day_report.txt", 'w') as day_report:
             day_report.write(f"Work day: {self.day.strftime('%A %d %B %Y')}\nWeek No:  {self.day.strftime('%W')}\n\n")
             day_report.write(f"Work start: {self.work_start_time.strftime('%H:%M:%S')}\n")

@@ -90,11 +90,6 @@ class WorkDay:
                     self.work_break_analysis.append(f"\tBreak {i} started at {j.strftime('%H:%M:%S')} and is still ongoing.\n")
 
 
-    def save_work_day(self):
-        """Save the work day to a file."""
-        pass
-
-
     def report_work_day(self):
         """Report the work day to the user in a txt file."""
         self.count_work_time()

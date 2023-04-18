@@ -37,23 +37,23 @@ class TimeTracker(tk.Tk):
         self.database.create_database()
 
         # create a pop up window to ask for player name
-        self.player_login()
+        self.user_login()
 
     # register a player
-    def player_login(self):
+    def user_login(self):
             
-        self.player_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
+        self.user_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
 
-        while self.player_info == "" or self.player_info == None:
-            self.player_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
+        while self.user_info == "" or self.user_info == None:
+            self.user_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
 
         else:
-            if self.database.find_user(self.player_info):
-                messagebox.showinfo(title='Welcome Back', message=f'Hi, Welcome Back\n{self.player_info}')
+            if self.database.find_user(self.user_info):
+                messagebox.showinfo(title='Welcome Back', message=f'Hi, Welcome Back\n{self.user_info}')
                 self.database.see_database()
             else:
-                messagebox.showinfo(title='Welcome', message=f'Hi, Welcome\n{self.player_info}')
-                self.database.add_user(self.player_info, date.today(),None, None)
+                messagebox.showinfo(title='Welcome', message=f'Hi, Welcome\n{self.user_info}')
+                self.database.add_user(self.user_info, date.today(),None, None)
                 self.database.see_database()
 
         
@@ -119,15 +119,15 @@ class TimeTracker(tk.Tk):
         """End the work day."""
         self.day.end_work_day()
         self.display_work_status()
-        self.database.add_work_time(self.player_info, date.today(), str(self.day.total_work_time).split('.')[0])
-        self.database.add_break_time(self.player_info, date.today(), str(self.day.total_break_time).split('.')[0])
+        self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
+        self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
 
     # Report and save the work day
     def __report_work_day(self):
         """Report the work day."""
         self.day.report_work_day()
-        self.database.add_work_time(self.player_info, date.today(), str(self.day.total_work_time).split('.')[0])
-        self.database.add_break_time(self.player_info, date.today(), str(self.day.total_break_time).split('.')[0])
+        self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
+        self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
         self.database.see_database()
 
     # Display work status e.g: Working! or On Break!
@@ -154,8 +154,8 @@ class TimeTracker(tk.Tk):
         """Close window event"""
         if messagebox.askyesno("Quit", "Do you want to close the program?"):
             self.day.report_work_day()
-            self.database.add_work_time(self.player_info, date.today(), str(self.day.total_work_time).split('.')[0])
-            self.database.add_break_time(self.player_info, date.today(), str(self.day.total_break_time).split('.')[0])
+            self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
+            self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
             self.destroy()
 
 if __name__ == "__main__":

@@ -5,7 +5,8 @@ from tkinter import simpledialog
 #from PIL import Image, ImageTk
 from pathlib import Path
 from time import strftime
-
+from datetime import date 
+from userdatabase import UserDatabase
 
 
 #import time_tracking_calendar 
@@ -29,6 +30,32 @@ class TimeTracker(tk.Tk):
         
         # Show the the day information
         self.day = WorkDay()
+        
+        # Create the database for the user
+        self.user_info = None
+        self.database = UserDatabase()
+        self.database.create_database()
+
+        # create a pop up window to ask for player name
+        self.player_login()
+
+    # register a player
+    def player_login(self):
+            
+        self.player_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
+
+        while self.player_info == "" or self.player_info == None:
+            self.player_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
+
+        else:
+            if self.database.find_user(self.player_info):
+                messagebox.showinfo(title='Welcome Back', message=f'Hi, Welcome Back\n{self.player_info}')
+                self.database.see_database()
+            else:
+                messagebox.showinfo(title='Welcome', message=f'Hi, Welcome\n{self.player_info}')
+                self.database.add_user(self.player_info, date.today(),None, None)
+                self.database.see_database()
+
         
         # Show the the day information
         self.work_day_label = ttk.Label(self, text=f"{self.day}", font=40)
@@ -54,7 +81,7 @@ class TimeTracker(tk.Tk):
         return_button = ttk.Button(self, text="End Break", command=lambda: self.__end_break())
         return_button.grid(row=3, column=3, sticky=tk.NSEW)
 
-        report_button = ttk.Button(self, text="Report Day", command=self.day.report_work_day)
+        report_button = ttk.Button(self, text="Report Day", command=lambda: self.__report_work_day())
         report_button.grid(row=4, column=2, sticky=tk.NSEW)
 
         day_stats_button = ttk.Button(self, text="Day Stats", command=self.display_day_stats)
@@ -63,35 +90,45 @@ class TimeTracker(tk.Tk):
         self.columnconfigure((1,2,3,4,5), weight=1)
         self.rowconfigure((1,2,3,4,5), weight=1)
     
+    # Show the actual time
     def show_time(self):
         time_string = strftime('%H:%M:%S') # time format 
         self.time_label.config(text=time_string)
         self.time_label.after(1000,app.show_time) # time delay of 1000 milliseconds 
 
-
+    # Start the day
     def __start_work_day(self):
         """Start the work day."""
         self.day.start_work_day()
         self.display_work_status()
 
-
+    # Give a break
     def __give_break(self):
         """Give a break."""
         self.day.give_break()
         self.display_work_status()
 
-
+    # End the break
     def __end_break(self):
         """End the break."""
         self.day.return_from_break()
         self.display_work_status()
     
-
+    # End the work day
     def __end_work_day(self):
         """End the work day."""
         self.day.end_work_day()
         self.display_work_status()
+        self.database.add_work_time(self.player_info, date.today(), str(self.day.total_work_time).split('.')[0])
+        self.database.add_break_time(self.player_info, date.today(), str(self.day.total_break_time).split('.')[0])
 
+    # Report and save the work day
+    def __report_work_day(self):
+        """Report the work day."""
+        self.day.report_work_day()
+        self.database.add_work_time(self.player_info, date.today(), str(self.day.total_work_time).split('.')[0])
+        self.database.add_break_time(self.player_info, date.today(), str(self.day.total_break_time).split('.')[0])
+        self.database.see_database()
 
     # Display work status e.g: Working! or On Break!
     def display_work_status(self):
@@ -116,6 +153,9 @@ class TimeTracker(tk.Tk):
     def __close(self):
         """Close window event"""
         if messagebox.askyesno("Quit", "Do you want to close the program?"):
+            self.day.report_work_day()
+            self.database.add_work_time(self.player_info, date.today(), str(self.day.total_work_time).split('.')[0])
+            self.database.add_break_time(self.player_info, date.today(), str(self.day.total_break_time).split('.')[0])
             self.destroy()
 
 if __name__ == "__main__":

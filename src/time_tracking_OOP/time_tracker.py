@@ -102,19 +102,43 @@ class TimeTracker(tk.Tk):
         self.day.start_work_day()
         self.display_work_status()
 
+    # Day_check decorator
+    def day_check(func):
+        """Check if the day has started."""
+        def wrapper(self, *args, **kwargs):
+            if self.day.work_status == "Not Started!":
+                messagebox.showerror("Error", "You have to start the day first.")
+            else:
+                return func(self, *args, **kwargs)
+        return wrapper
+    
+    # Break_check decorator
+    def break_check(func):
+        """Check if the break has started."""
+        def wrapper(self, *args, **kwargs):
+            if self.day.work_breaks == {}:
+                messagebox.showerror("Error", "You have to start the break first.")
+            else:
+                return func(self, *args, **kwargs)
+        return wrapper
+
     # Give a break
+    @day_check
     def __give_break(self):
         """Give a break."""
         self.day.give_break()
         self.display_work_status()
 
     # End the break
+    @break_check
+    @day_check
     def __end_break(self):
         """End the break."""
         self.day.return_from_break()
         self.display_work_status()
     
     # End the work day
+    @day_check
     def __end_work_day(self):
         """End the work day."""
         self.day.end_work_day()
@@ -123,6 +147,7 @@ class TimeTracker(tk.Tk):
         self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
 
     # Report and save the work day
+    @day_check
     def __report_work_day(self):
         """Report the work day."""
         self.day.report_work_day()
@@ -148,12 +173,13 @@ class TimeTracker(tk.Tk):
         home = day_stats.DayStats(window)
         home.pack(expand=True)
         home.grab_set()
-        
+    
 
     def __close(self):
         """Close window event"""
         if messagebox.askyesno("Quit", "Do you want to close the program?"):
-            self.day.report_work_day()
+            self.day.count_work_time()
+            self.day.count_break_time()
             self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
             self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
             self.destroy()

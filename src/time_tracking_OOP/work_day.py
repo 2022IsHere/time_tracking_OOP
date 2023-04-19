@@ -1,4 +1,6 @@
 import datetime
+import os
+from functools import wraps
 
 class WorkDay:
     """A basic model for representing a work day"""
@@ -94,7 +96,8 @@ class WorkDay:
         """Report the work day to the user in a txt file."""
         self.count_work_time()
         self.count_break_time()
-        with open(f"{self.day.strftime('%d.%m.%Y')}_day_report.txt", 'w') as day_report:
+        with open(f"{self.day.strftime('%d.%m.%Y')}_day_report.txt", 'a') as day_report:
+            day_report.write(f"{'#' * 55}\n")
             day_report.write(f"Work day: {self.day.strftime('%A %d %B %Y')}\nWeek No:  {self.day.strftime('%W')}\n\n")
             day_report.write(f"Work start: {self.work_start_time.strftime('%H:%M:%S')}\n")
             day_report.write(f"Work end: {self.work_end_time.strftime('%H:%M:%S')}\n")
@@ -104,5 +107,6 @@ class WorkDay:
             day_report.write("\nBreaks:\n")
             for i in self.work_break_analysis:
                 day_report.write(i)
+            day_report.write(f"{'#' * 55}\n")
         
 

@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import tkcalendar as tkc
-import work_day
-import time_tracker
-
 
 class DayStats(tk.Frame):
 
@@ -15,13 +12,13 @@ class DayStats(tk.Frame):
         parent.update()
         self.width = parent.winfo_width()
         self.height = parent.winfo_height()
+        self.present_day =  datetime.date.today()
         
         """Initialize window's attributes"""
         super().__init__(master=parent)
         self.parent = parent
         
 
-        self.present_day = datetime.date.today()
         self.cal = tkc.Calendar(self, selectmode="day", year=self.present_day.year, month=self.present_day.month, day=self.present_day.day)
         self.cal.grid(row=0, column=6, sticky=tk.NSEW)
 

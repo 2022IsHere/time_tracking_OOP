@@ -1,16 +1,16 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import shutil
+import os
 from tkinter import messagebox
 from tkinter import simpledialog
-#from PIL import Image, ImageTk
 from pathlib import Path
 from time import strftime
 from datetime import date 
+from tkinter import filedialog
 from userdatabase import UserDatabase
-import os
 
 
-#import time_tracking_calendar 
 from work_day import WorkDay
 import day_stats
 
@@ -123,15 +123,6 @@ class TimeTracker(tk.Tk):
                 return func(self, *args, **kwargs)
         return wrapper
     
-    # Directory check decorator
-    def directory_check(func):
-        """Check if the directory exists."""
-        def wrapper(self, *args, **kwargs):
-            if not os.path.exists(self.user_info):
-                os.makedirs(self.user_info)
-            return func(self, *args, **kwargs)
-        return wrapper
-
     # Give a break
     @day_check
     def __give_break(self):
@@ -153,17 +144,25 @@ class TimeTracker(tk.Tk):
         """End the work day."""
         self.day.end_work_day()
         self.display_work_status()
-        self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
-        self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
+        self.database.update_user(self.user_info, date.today(), str(self.day.count_work_time()).split('.')[0], str(self.day.count_break_time()).split('.')[0])
+        self.database.see_database()
+
+
+    def move_day_reports(self):
+        if not os.path.exists(f"Day_Reports//{self.user_info}"):
+            os.makedirs(f"Day_Reports//{self.user_info}")
+
+        for filename in os.listdir("."):
+            if filename.endswith("_day_report.txt"):
+                shutil.move(filename, f"Day_Reports//{self.user_info}")
 
     # Report and save the work day
-    @directory_check
     @day_check
     def __report_work_day(self):
         """Report the work day."""
         self.day.report_work_day()
-        self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
-        self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
+        self.move_day_reports()
+        self.database.update_user(self.user_info, date.today(), str(self.day.count_work_time()).split('.')[0], str(self.day.count_break_time()).split('.')[0])
         self.database.see_database()
 
     # Display work status e.g: Working! or On Break!
@@ -189,10 +188,8 @@ class TimeTracker(tk.Tk):
     def __close(self):
         """Close window event"""
         if messagebox.askyesno("Quit", "Do you want to close the program?"):
-            self.day.count_work_time()
-            self.day.count_break_time()
-            self.database.add_work_time(self.user_info, date.today(), str(self.day.total_work_time).split('.')[0])
-            self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
+            self.database.update_user(self.user_info, date.today(), str(self.day.count_work_time()).split('.')[0], str(self.day.count_break_time()).split('.')[0])
+            self.database.see_database()
             self.destroy()
 
 if __name__ == "__main__":

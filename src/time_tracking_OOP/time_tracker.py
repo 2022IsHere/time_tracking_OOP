@@ -7,6 +7,7 @@ from pathlib import Path
 from time import strftime
 from datetime import date 
 from userdatabase import UserDatabase
+import os
 
 
 #import time_tracking_calendar 
@@ -121,6 +122,15 @@ class TimeTracker(tk.Tk):
             else:
                 return func(self, *args, **kwargs)
         return wrapper
+    
+    # Directory check decorator
+    def directory_check(func):
+        """Check if the directory exists."""
+        def wrapper(self, *args, **kwargs):
+            if not os.path.exists(self.user_info):
+                os.makedirs(self.user_info)
+            return func(self, *args, **kwargs)
+        return wrapper
 
     # Give a break
     @day_check
@@ -147,6 +157,7 @@ class TimeTracker(tk.Tk):
         self.database.add_break_time(self.user_info, date.today(), str(self.day.total_break_time).split('.')[0])
 
     # Report and save the work day
+    @directory_check
     @day_check
     def __report_work_day(self):
         """Report the work day."""

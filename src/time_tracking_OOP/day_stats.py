@@ -8,6 +8,7 @@ import tkcalendar as tkc
 import work_day
 import time_tracker
 
+
 class DayStats(tk.Frame):
 
     def __init__(self, parent):
@@ -21,18 +22,31 @@ class DayStats(tk.Frame):
         
 
         self.present_day = datetime.date.today()
-        cal = tkc.Calendar(self, selectmode="day", year=self.present_day.year, month=self.present_day.month, day=self.present_day.day)
-        cal.pack(pady=20)
-
-
-        my_button = tk.Button(self, text="Get Date", command=self.grab_date)
-        my_button.pack(pady=20)
+        self.cal = tkc.Calendar(self, selectmode="day", year=self.present_day.year, month=self.present_day.month, day=self.present_day.day)
+        self.cal.grid(row=0, column=6, sticky=tk.NSEW)
 
         self.my_label = tk.Label(self, text="")
-        self.my_label.pack(pady=20)
+        self.my_label.grid(row=1, column=6, sticky=tk.E)
 
-    def grab_date():
-        self.my_label.config(text=cal.get_date())
+        day_summary_label_frame = ttk.Frame(self)
+        day_summary_label = ttk.Label(day_summary_label_frame, text="Day Summary", font=100)
+        day_summary_label.pack(side=tk.TOP)
+        day_summary_label_frame.grid(row=3, column=0, columnspan=6, sticky=tk.NSEW)
+
+
+
+        bar_chart_button = tk.Button(self, text="Bar Chart", command=self.create_bar_chart)
+        bar_chart_button.grid(row=4, column=1, sticky=tk.NSEW)
+
+        pie_chart_button = tk.Button(self, text="Pie Chart", command=self.create_pie_chart)
+        pie_chart_button.grid(row=4, column=2, sticky=tk.NSEW)
+
+        my_button = tk.Button(self, text="Get Date", command=self.grab_date)
+        my_button.grid(row=4, column=4, sticky=tk.NSEW)
+
+
+    def grab_date(self):
+        self.my_label.config(text=self.cal.get_date())
 
         # Create a pandas DataFrame to hold the data
         self.df = pd.DataFrame({

@@ -58,6 +58,26 @@ class UserDatabase:
         if result:
             return result
         
+    def find_user_work_time(self, name, day):
+        """Return the work time for a specific user and day"""
+        with sqlite3.connect('userdata.db') as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT work_time FROM users WHERE name=? AND day=?", (name, day))
+            result = cursor.fetchone()
+
+        if result:
+            return result[0]
+
+    def find_user_break_time(self, name, day):
+        """Return the break time for a specific user and day"""
+        with sqlite3.connect('userdata.db') as connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT break_time FROM users WHERE name=? AND day=?", (name, day))
+            result = cursor.fetchone()
+
+        if result:
+            return result[0]
+        
         
     def clean_database(self):
         '''function to swipe clean database when wanted to'''

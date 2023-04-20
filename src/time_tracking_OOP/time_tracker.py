@@ -169,7 +169,7 @@ class TimeTracker(tk.Tk):
     def display_work_status(self):
         """Display the current work status."""
         day_info_frame = ttk.Frame(self)
-        self.work_status_label = ttk.Label(day_info_frame, text=f"{self.day.work_status}",font=100)
+        self.work_status_label = ttk.Label(day_info_frame, text=f"{self.day.work_status}",font=20)
         self.work_status_label.pack(side=tk.TOP)
         day_info_frame.grid(row=2, column=2,columnspan=2, sticky=tk.NSEW)
 
@@ -178,9 +178,9 @@ class TimeTracker(tk.Tk):
         """Open day stats window and display stats for the work day."""
         window = tk.Toplevel(self)
         window.title("Day Stats")
-        window.geometry("%dx%d" % (self.winfo_screenwidth() * 4//5, self.winfo_screenheight() * 4//5))
+        window.geometry("%dx%d" % (self.winfo_screenwidth() * 1//3, self.winfo_screenheight() * 1//3))
         window.update()
-        home = day_stats.DayStats(window)
+        home = day_stats.DayStats(window, self.user_info, self.day, self.database)
         home.pack(expand=True)
         home.grab_set()
     

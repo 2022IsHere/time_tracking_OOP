@@ -1,3 +1,5 @@
+"""WorkDay class"""
+
 import datetime
 
 

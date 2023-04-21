@@ -23,8 +23,15 @@ release = '0.1.0'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    #'sphinxcontrib.plantuml' # This line supposedly enables plantuml , but it doesn't work
 ]
+
+# This is the plantuml path on my computer, after installing plantumlyou should change it to yours
+#plantuml = 'java -jar /home/uras/plantuml/plantuml.jar'
+
+autodoc_mock_imports = ['tkcalendar', 'userdatabase', 'day_stats', 'work_day']
+
 
 templates_path = ['_templates']
 exclude_patterns = []

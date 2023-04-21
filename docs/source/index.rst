@@ -10,9 +10,36 @@ Welcome to Work Time Tracker's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: # here comes the modules e.g time_tracking_OOP.src.time_tracking_OOP.module name
+.. automodule:: src.time_tracking_OOP.time_tracker
    :members:
 
+.. automodule:: src.time_tracking_OOP.work_day
+   :members:
+
+.. automodule:: src.time_tracking_OOP.day_stats
+   :members: 
+
+.. automodule:: src.time_tracking_OOP.userdatabase
+   :members:
+
+UML Class Diagrams
+==================
+
+.. image:: time_tracker.png
+   :width: 200
+   :alt: TimeTracker UML diagram
+
+.. image:: work_day.png
+   :width: 200
+   :alt: WorkDay UML diagram
+
+.. image:: day_stats.png
+   :width: 200
+   :alt: DayStats UML diagram
+
+.. image:: userdatabase.png
+   :width: 200
+   :alt: UserDatabase UML diagram
 
 
 Indices and tables

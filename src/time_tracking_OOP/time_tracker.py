@@ -4,15 +4,13 @@ import shutil
 import os
 from tkinter import messagebox
 from tkinter import simpledialog
-from pathlib import Path
 from time import strftime
-from datetime import date 
-from tkinter import filedialog
+from datetime import date
 from userdatabase import UserDatabase
-
-
+# import the not built-in work day class and the day stats
 from work_day import WorkDay
 import day_stats
+
 
 class TimeTracker(tk.Tk):
     """Time tracker main window"""
@@ -25,13 +23,13 @@ class TimeTracker(tk.Tk):
 
         # window size and position
         self.geometry("%dx%d" % (self.winfo_screenwidth() * 3//5, self.winfo_screenheight() * 3//5))
-    
+
         # bind close window event
         self.protocol("WM_DELETE_WINDOW", self.__close)
-        
+
         # Show the the day information
         self.day = WorkDay()
-        
+
         # Create the database for the user
         self.user_info = None
         self.database = UserDatabase()
@@ -40,9 +38,9 @@ class TimeTracker(tk.Tk):
         # create a pop up window to ask for player name
         self.user_login()
 
-    # register a player
+    # register a user
     def user_login(self):
-            
+        """Ask for user name and create a new user if it doesn't exist."""
         self.user_info = simpledialog.askstring("Input", "Welcome to Work Time Tracker. Please enter your name.")
 
         while self.user_info == "" or self.user_info == None:
@@ -54,10 +52,9 @@ class TimeTracker(tk.Tk):
                 self.database.see_database()
             else:
                 messagebox.showinfo(title='Welcome', message=f'Hi, Welcome\n{self.user_info}')
-                self.database.add_user(self.user_info, date.today(),None, None)
+                self.database.add_user(self.user_info, date.today(), None, None)
                 self.database.see_database()
 
-        
         # Show the the day information
         self.work_day_label = ttk.Label(self, text=f"{self.day}", font=40)
         self.work_day_label.grid(row=0, column=0, sticky=tk.NSEW)
@@ -68,7 +65,7 @@ class TimeTracker(tk.Tk):
 
         # Display Informaton about the current work day
         self.display_work_status()
-        
+
         # Create buttons
         work_start_button = ttk.Button(self, text="Day Start", command=lambda: self.__start_work_day())
         work_start_button.grid(row=3, column=1, sticky=tk.NSEW)
@@ -88,16 +85,16 @@ class TimeTracker(tk.Tk):
         day_stats_button = ttk.Button(self, text="Day Stats", command=self.display_day_stats)
         day_stats_button.grid(row=4, column=3, sticky=tk.NSEW)
 
-        self.columnconfigure((1,2,3,4,5), weight=1)
-        self.rowconfigure((1,2,3,4,5), weight=1)
-    
-    # Show the actual time
-    def show_time(self):
-        time_string = strftime('%H:%M:%S') # time format 
-        self.time_label.config(text=time_string)
-        self.time_label.after(1000,app.show_time) # time delay of 1000 milliseconds 
+        self.columnconfigure((1, 2, 3, 4, 5), weight=1)
+        self.rowconfigure((1, 2, 3, 4, 5), weight=1)
 
-    # Start the day
+    # Show the actual time on the window
+    def show_time(self):
+        time_string = strftime('%H:%M:%S')  # time format
+        self.time_label.config(text=time_string)
+        self.time_label.after(1000, app.show_time)  # time delay of 1000 milliseconds
+
+    # Calls the start work day method and display work status methods when the start work day button is pressed
     def __start_work_day(self):
         """Start the work day."""
         self.day.start_work_day()
@@ -112,7 +109,7 @@ class TimeTracker(tk.Tk):
             else:
                 return func(self, *args, **kwargs)
         return wrapper
-    
+
     # Break_check decorator
     def break_check(func):
         """Check if the break has started."""
@@ -122,23 +119,24 @@ class TimeTracker(tk.Tk):
             else:
                 return func(self, *args, **kwargs)
         return wrapper
-    
-    # Give a break
+
+    # Calls give break and display work status methods when the give break button is pressed
     @day_check
     def __give_break(self):
         """Give a break."""
         self.day.give_break()
         self.display_work_status()
 
-    # End the break
+    # Calls end break and display work status methods when the end break button is pressed
     @break_check
     @day_check
     def __end_break(self):
         """End the break."""
         self.day.return_from_break()
         self.display_work_status()
-    
-    # End the work day
+
+    # Calls end work day and display work status methods when the end work day button is pressed
+    # Updates the database with the work day information
     @day_check
     def __end_work_day(self):
         """End the work day."""
@@ -147,8 +145,10 @@ class TimeTracker(tk.Tk):
         self.database.update_user(self.user_info, date.today(), str(self.day.count_work_time()).split('.')[0], str(self.day.count_break_time()).split('.')[0])
         self.database.see_database()
 
-
+    # Checks if the directory is present
+    # Moves the day reports to the Day_Reports folder under the user name
     def move_day_reports(self):
+        """Move the day reports to the Day_Reports folder under the user name."""
         if not os.path.exists(f"Day_Reports//{self.user_info}"):
             os.makedirs(f"Day_Reports//{self.user_info}")
 
@@ -156,7 +156,8 @@ class TimeTracker(tk.Tk):
             if filename.endswith("_day_report.txt"):
                 shutil.move(filename, f"Day_Reports//{self.user_info}")
 
-    # Report and save the work day
+    # Calls report work day and move day reports methods when the report work day button is pressed
+    # Updates the database with the work day information
     @day_check
     def __report_work_day(self):
         """Report the work day."""
@@ -165,15 +166,15 @@ class TimeTracker(tk.Tk):
         self.database.update_user(self.user_info, date.today(), str(self.day.count_work_time()).split('.')[0], str(self.day.count_break_time()).split('.')[0])
         self.database.see_database()
 
-    # Display work status e.g: Working! or On Break!
+    # Display work status on the window e.g: Working! or On Break!
     def display_work_status(self):
         """Display the current work status."""
         day_info_frame = ttk.Frame(self)
-        self.work_status_label = ttk.Label(day_info_frame, text=f"{self.day.work_status}",font=20)
+        self.work_status_label = ttk.Label(day_info_frame, text=f"{self.day.work_status}", font=20)
         self.work_status_label.pack(side=tk.TOP)
-        day_info_frame.grid(row=2, column=2,columnspan=2, sticky=tk.NSEW)
+        day_info_frame.grid(row=2, column=2, columnspan=2, sticky=tk.NSEW)
 
-    
+    # Open day stats window and display stats for the work day
     def display_day_stats(self):
         """Open day stats window and display stats for the work day."""
         window = tk.Toplevel(self)
@@ -183,7 +184,6 @@ class TimeTracker(tk.Tk):
         home = day_stats.DayStats(window, self.user_info, self.day, self.database)
         home.pack(expand=True)
         home.grab_set()
-    
 
     def __close(self):
         """Close window event"""
@@ -191,6 +191,7 @@ class TimeTracker(tk.Tk):
             self.database.update_user(self.user_info, date.today(), str(self.day.count_work_time()).split('.')[0], str(self.day.count_break_time()).split('.')[0])
             self.database.see_database()
             self.destroy()
+
 
 if __name__ == "__main__":
     app = TimeTracker()

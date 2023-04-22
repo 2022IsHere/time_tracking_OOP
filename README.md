@@ -34,9 +34,9 @@ To start Work Time Tracker, under src/time_tracking_OOP directory, run:
     py -m time_tracker
 
 
-The app will open a window where you can enter your login details or create a new account. Once you have logged in, you will see the main screen where you can start tracking your work and break times by clicking the "Start" and "End" buttons.
+The app will open a window where you can enter your login details or create a new account. Once you have logged in, you will see the main screen where you can start tracking your work and break times by clicking the "Day Start", "Give Break", "End Break", and "Day End" buttons.
 
-You can also view your statistics for each day by clicking on the "View Stats" button. This will open a new window where you can select a date from the calendar and view your work and break times for that day in the form of a bar chart or a pie chart.
+You can also view your statistics for each day by clicking on the "Report Day" which will create two directories (if not existing) "Day_Reports/user_name" and under the user_name directory there will be the user’s work day report stored. There is also a "Day Stats" buttons which will open a new window where you can select a date from the calendar and view your work and break times for that day in the form of a bar chart or a pie chart.
 
 Credits
 -------

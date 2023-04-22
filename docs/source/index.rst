@@ -26,19 +26,23 @@ UML Class Diagrams
 ==================
 
 .. image:: time_tracker.png
-   :width: 200
+   :width: 300
+   :height: 500
    :alt: TimeTracker UML diagram
 
 .. image:: work_day.png
-   :width: 200
+   :width: 300
+   :height: 500
    :alt: WorkDay UML diagram
 
 .. image:: day_stats.png
-   :width: 200
+   :width: 300
+   :height: 500
    :alt: DayStats UML diagram
 
 .. image:: userdatabase.png
-   :width: 200
+   :width: 300
+   :height: 500
    :alt: UserDatabase UML diagram
 
 
